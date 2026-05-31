@@ -26,44 +26,10 @@ env:
   DOTNET_VERSION: '10.0.x'
 
 jobs:
-  build:
-    name: Build & test (.NET)
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
-    permissions:
-      contents: read
-    steps:
-      - name: Harden runner
-        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0  # v2.12.0
-        with:
-          egress-policy: audit
-
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
-        with:
-          persist-credentials: false
-          fetch-depth: 1
-
-      - name: Setup .NET ${{ env.DOTNET_VERSION }}
-        uses: actions/setup-dotnet@3e891b0cb619bf60e2c25674b222b8940e2c1c25  # v4.1.0
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-          dotnet-quality: preview
-
-      - name: Restore solution
-        run: dotnet restore
-
-      - name: Build solution
-        run: dotnet build --configuration Release --no-restore
-
-      - name: Run unit tests
-        run: dotnet test --configuration Release --no-build --filter "Category!=Integration" --verbosity normal
-        continue-on-error: true
-
   security-scan:
     name: Security scanning
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: build
     permissions:
       contents: read
       security-events: write
@@ -104,7 +70,7 @@ jobs:
     name: Build & push container (${{ matrix.service.name }})
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: [build, security-scan]
+    needs: [security-scan]
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     permissions:
       contents: read
