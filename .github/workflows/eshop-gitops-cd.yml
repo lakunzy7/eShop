@@ -1,5 +1,6 @@
 name: eShop build + GitOps update
 
+# Triggers: push to integration branch (src or workflow changes), PR, or manual dispatch.
 on:
   push:
     branches: [cloudopshub/k8s-integration]
