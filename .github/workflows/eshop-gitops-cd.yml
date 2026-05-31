@@ -240,10 +240,9 @@ jobs:
             echo "no changes to commit"
             exit 0
           fi
-          git commit -m "ci(eshop): bump dev image tags to ${TAG}
-
-Source build: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-Source commit: ${{ github.sha }}"
+          git commit -m "ci(eshop): bump dev image tags to ${TAG}" \
+                     -m "Source build: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+                     -m "Source commit: ${{ github.sha }}"
           git push
 
       - name: Job summary
